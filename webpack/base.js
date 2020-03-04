@@ -25,6 +25,7 @@ module.exports = {
       }
     ]
   },
+
   plugins: [
     new CleanWebpackPlugin({
       root: path.resolve(__dirname, "../")
