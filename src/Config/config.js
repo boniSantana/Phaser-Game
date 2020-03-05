@@ -26,5 +26,13 @@ export default {
   // player double jump force
   playerDoubleJump: 300,
 
+  loaderPath: 'assets/',
+
+  physics: {
+    default: 'arcade',
+    arcade: {
+      debug: false
+    }
+  }
   
 };
