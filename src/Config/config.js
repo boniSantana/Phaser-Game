@@ -14,15 +14,14 @@ export default {
     mode: Phaser.Scale.FIT,
     autoCenter: Phaser.Scale.CENTER_BOTH,
     parent: "thegame",
-    width: 640,
+    width: 800,
     height: 480
   },
   physics: {
     default: "arcade",
     arcade: {
-      gravity: {
-        y: 0
-      }
+      gravity: { y: 300 },
+      debug: true
     }
   },
 
