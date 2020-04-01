@@ -5,17 +5,18 @@ export default {
   // width of the game, in pixels
 
   type: Phaser.AUTO,
-  backgroundColor: 0x444444,
   parent: "phaser-example",
-  width: 640,
-  height: 480,
+  pixelArt: false,
+  backgroundColor: "#1d212d",
+  width: 800,
+  height: 600,
   // background color
   scale: {
     mode: Phaser.Scale.FIT,
     autoCenter: Phaser.Scale.CENTER_BOTH,
     parent: "thegame",
     width: 800,
-    height: 480
+    height: 600
   },
   physics: {
     default: "arcade",

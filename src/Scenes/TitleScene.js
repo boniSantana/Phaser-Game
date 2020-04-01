@@ -24,6 +24,15 @@ export default class TitleScene extends Phaser.Scene {
       this.model.bgMusicPlaying = false;
       this.sys.game.globals.bgMusic = this.bgMusic;
     }
+
+    this.add
+    .text(16, 16, "Arrow keys or WASD to move & jump", {
+      font: "18px monospace",
+      fill: "#000000",
+      padding: { x: 20, y: 10 },
+      backgroundColor: "#ffffff"
+    })
+    .setScrollFactor(0);
   }
 
   centerButton (gameObject, offset = 0) {
