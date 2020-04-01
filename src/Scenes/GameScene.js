@@ -20,13 +20,14 @@ export default class GameScene extends Phaser.Scene {
 
     // add tiles to tilemap.
     let tile = this.map.addTilesetImage("tileset01", "tile");
-
+    
     // render staticlayer "layer01"
     this.layer = this.map.createStaticLayer("layer01", tile);
+    
 
     // add lyer01 at physic staticgroup.
     this.physics.add.staticGroup("layer01");
-
+    
     // which tiles will collide? Tiles from 1 to 3.
     this.layer.setCollisionBetween(1, 3);
 
@@ -49,7 +50,13 @@ export default class GameScene extends Phaser.Scene {
 
   // method to be executed at each frame
   update() {
+
+    let tile = this.map.getTileAtWorldXY(this.hero.x, this.hero.y);
+    // hero is underwater when over a water tile
     this.hero.update();
     // check which tile the hero is on
+
+
   }
+
 }

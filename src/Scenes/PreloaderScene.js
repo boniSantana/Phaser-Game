@@ -95,7 +95,7 @@ export default class PreloaderScene extends Phaser.Scene {
       frameHeight: 32,
     });
     this.load.image("tiles", "assets/tiles/0x72-industrial-tileset-32px-extruded.png");
-
+    this.load.image("specialTile", "assets/tilesets/specialTile.png");
   }
 
   ready () {
