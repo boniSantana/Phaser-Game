@@ -10,15 +10,6 @@ export default class Sprite {
     this.scene = scene;
     console.log("key:", key);
 
-    const keys = scene.input.keyboard.addKeys({
-      left: LEFT,
-      right: RIGHT,
-      up: UP,eacheach
-      w: W,
-      a: A,
-      d: D,
-      s: S
-    });
 
     // Create the animations we need from the player spritesheet
     const anims = scene.anims;
@@ -64,6 +55,26 @@ export default class Sprite {
 
     // Track the arrow keys & WASD
 
+    const {
+      LEFT,
+      RIGHT,
+      UP,
+      DOWN,
+      W,
+      A,
+      D,
+      S
+    } = Phaser.Input.Keyboard.KeyCodes;
+    this.keys = scene.input.keyboard.addKeys({
+      left: LEFT,
+      right: RIGHT,
+      up: UP,
+      down: DOWN,
+      w: W,
+      a: A,
+      d: D,
+      s: S
+    });
 
     // player.setBounce(0.5);
   }
