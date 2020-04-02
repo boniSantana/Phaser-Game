@@ -25,7 +25,7 @@ export default class Player {
 
     anims.create({
       key: "right",
-      frames: anims.generateFrameNumbers("hero", { start: 3, end: 4 }),
+      frames: anims.generateFrameNumbers("hero", { start: 2, end: 4 }),
       frameRate: 10,
       repeat: 1
     });
@@ -34,6 +34,13 @@ export default class Player {
       key: "up",
       frames: anims.generateFrameNumbers("hero", { start: 5, end: 6 }),
       frameRate: 30,
+      repeat: 1
+    });
+
+    anims.create({
+      key: "down",
+      frames: anims.generateFrameNumbers("hero", { start: 7, end: 8 }),
+      frameRate: 10,
       repeat: 1
     });
 
