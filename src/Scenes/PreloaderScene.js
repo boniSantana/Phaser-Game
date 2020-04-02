@@ -94,6 +94,11 @@ export default class PreloaderScene extends Phaser.Scene {
       frameWidth: 38,
       frameHeight: 37,
     });
+    this.load.spritesheet("mirrorCopy", "assets/spritesheets/heroCopy.png", {
+      frameWidth: 38,
+      frameHeight: 37,
+    });
+    this.load.image('bigMirror', 'assets/tilesets/bigMirror.png');
 
   }
 
