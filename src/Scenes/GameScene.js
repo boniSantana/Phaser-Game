@@ -69,20 +69,20 @@ export default class GameScene extends Phaser.Scene {
   // method to be executed at each frame
   update() {
    
-    this.hero.update();
+    this.hero.update(gravityInvert);
     this.layer.setTileIndexCallback(REDTILE, ColliderRedTile, this);
     this.layer.setTileIndexCallback(YELLOWTILE, ColliderYellowTile, this);
 
     if (trampolin === true)
     {
-      this.hero.sprite.body.setVelocityY(-500);
+      this.hero.sprite.body.setVelocityY(gravityInvert * -500);
       trampolin = false;
     }
 
     if (haveGravityChange === true)
     {
       this.hero.sprite.body.gravity.y = 600 * gravityInvert;
-      this.hero.sprite.setFlipY(haveGravityChange);
+      this.hero.sprite.setFlipY( (gravityInvert === -1) ? true : false);
       haveGravityChange = false;
     }
 

@@ -72,20 +72,31 @@ export default class Player {
       s: S
     });
 
-   // player.setBounce(0.5);
+    // player.setBounce(0.5);
   }
 
-  update() {
+  canJump(gravityState, onGround, onRoof, keys) {
+    if (gravityState === 1 && onGround && (keys.up.isDown || keys.w.isDown)) {
+      return true;
+    } else if (gravityState === -1 && onRoof && (keys.up.isDown || keys.w.isDown)) {
+      return true;
+    } else {
+      return false;
+    }
+  }
+
+  update(gravitychange) {
     const keys = this.keys;
     const sprite = this.sprite;
     const onGround = sprite.body.blocked.down;
+    const onRoof = sprite.body.blocked.up;
     const acceleration = onGround ? 600 : 200;
 
     // Apply horizontal acceleration when left/a or right/d are applied
     if (keys.left.isDown || keys.a.isDown) {
       sprite.anims.play("left", true);
       sprite.setAccelerationX(-acceleration);
-      
+
       // No need to have a separate set of graphics for running to the left & to the right. Instead
       // we can just mirror the sprite.
     } else if (keys.right.isDown || keys.d.isDown) {
@@ -99,8 +110,9 @@ export default class Player {
     }
 
     // Only allow the player to jump if they are on the ground
-    if (onGround && (keys.up.isDown || keys.w.isDown)) {
-      sprite.setVelocityY(-500);
+    if (this.canJump(gravitychange, onGround, onRoof, keys)) {
+      console.log("Gravity change vale:", gravitychange);
+      sprite.setVelocityY(-500 * gravitychange);
     }
   }
 
