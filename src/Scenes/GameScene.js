@@ -1,6 +1,27 @@
 import "phaser";
 import config from "../Config/config";
-import Player from '../Objects/player';
+import Player from "../Objects/player";
+
+const REDTILE = 2;
+const YELLOWTILE = 3;
+const BLUETILE = 4;
+let trampolin = false;
+let gravityInvert = 1;
+let haveGravityChange = false;
+
+function ColliderRedTile (hero, tile)
+{
+  console.log("Anduvo trampolin");
+  trampolin = true;
+
+}
+
+function ColliderYellowTile (hero, tile)
+{
+  gravityInvert = gravityInvert * -1;
+  console.log("Anduvo gravedad");
+  haveGravityChange = true;
+}
 
 export default class GameScene extends Phaser.Scene {
   constructor() {
@@ -15,29 +36,25 @@ export default class GameScene extends Phaser.Scene {
   create() {
     // create cursors keys.
 
-    // creation of "level" tilemap.
-    this.map = this.make.tilemap({ key: "level" });
+    // creation of "level" tilemap
+    this.map = this.make.tilemap({
+      key: "level"
+    });
 
-    // add tiles to tilemap.
+    // add tiles to tilemap
     let tile = this.map.addTilesetImage("tileset01", "tile");
-    
-    // render staticlayer "layer01"
+
+    // which layers should we render? That's right, "layer01"
     this.layer = this.map.createStaticLayer("layer01", tile);
-    
 
-    // add lyer01 at physic staticgroup.
-    this.physics.add.staticGroup("layer01");
-    
-    // which tiles will collide? Tiles from 1 to 3.
-    this.layer.setCollisionBetween(1, 3);
+ 
+    // which tiles will collide? Tiles from 1 to 3. Water won't be checked for collisions
+    this.layer.setCollisionBetween(1, 6);
 
-    // add the hero sprite and enable arcade physics for the hero
+    // ¡Agregamos al heroe!
     this.hero = new Player(this, 100, 100);
 
-    // Para que rebote al saltar
-
-
-    //
+    // Para que choque en las paredes
     this.physics.add.collider(this.hero.sprite, this.layer);
 
     this.cameras.main.setBounds(0, 0, 1920, 1440);
@@ -45,18 +62,27 @@ export default class GameScene extends Phaser.Scene {
     // make the camera follow the hero
     this.cameras.main.startFollow(this.hero.sprite);
 
- 
   }
 
   // method to be executed at each frame
   update() {
-
-    let tile = this.map.getTileAtWorldXY(this.hero.x, this.hero.y);
-    // hero is underwater when over a water tile
+   
     this.hero.update();
-    // check which tile the hero is on
+    this.layer.setTileIndexCallback(REDTILE, ColliderRedTile, this);
+    this.layer.setTileIndexCallback(YELLOWTILE, ColliderYellowTile, this);
 
+    if (trampolin === true)
+    {
+      this.hero.sprite.body.setVelocityY(-500);
+      trampolin = false;
+    }
+
+    if (haveGravityChange === true)
+    {
+      this.hero.sprite.body.gravity.y = 600 * gravityInvert;
+      this.hero.sprite.setFlipY(haveGravityChange);
+      haveGravityChange = false;
+    }
 
   }
-
 }
