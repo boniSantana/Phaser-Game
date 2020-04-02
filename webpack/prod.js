@@ -5,6 +5,11 @@ const TerserPlugin = require("terser-webpack-plugin");
 
 module.exports = merge(base, {
   mode: "production",
+  entry: [
+    "webpack-dev-server/client?http://127.0.0.0:8080",
+    "webpack/hot/only-dev-server",
+    "./src"
+  ],
   output: {
     filename: "bundle.min.js"
   },
