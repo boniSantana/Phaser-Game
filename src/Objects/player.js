@@ -3,6 +3,9 @@
  * response to WASD/arrow keys. Call its update method from the scene's update and call its destroy
  * method when you're done with the player.
  */
+
+
+
 let timer = false;
 let timedEvent;
 export default class Player {
@@ -11,6 +14,28 @@ export default class Player {
     
     // Create the animations we need from the player spritesheet
     const anims = scene.anims;
+
+      anims.create({
+        key: "silencio",
+        frames: anims.generateFrameNumbers("expresiones", { start: 8, end: 15 }),
+        frameRate: 10,
+        repeat: 1
+      });
+      anims.create({
+        key: "exclamacion",
+        frames: anims.generateFrameNumbers("expresiones", { start: 16, end: 23 }),
+        frameRate: 10,
+        repeat: 1
+      });
+  
+      anims.create({
+        key: "interrogacion",
+        frames: anims.generateFrameNumbers("expresiones", { start: 24, end: 31 }),
+        frameRate: 10,
+        repeat: 1
+      });
+  
+
     anims.create({
       key: "left",
       frames: anims.generateFrameNumbers("hero", { start: 2, end: 0 }),
@@ -160,7 +185,30 @@ export default class Player {
     }
   }
 
+  expresion(x, y, name) {
+    this.animaExpresion = this.scene.add.sprite(x, y, 'expresiones', 1);
+    this.animaExpresion.anims.play(name, true);
+
+    this.scene.follow.add(this.animaExpresion, {
+      target: this.sprite, // Required.
+      offsetX: 20,
+      offsetY: -20,
+      rotate: false,
+      rotateOffset: false
+    });
+
+    this.scene.time.delayedCall(600, this.eliminarExpresion, [], this);
+  }
+
+  eliminarExpresion ()
+  {
+    console.log("Eliminar expresion");
+    this.scene.follow.remove(this.animaExpresion);
+    this.animaExpresion.destroy();
+  }
+
   destroy() {
+    
     this.sprite.destroy();
   }
 }

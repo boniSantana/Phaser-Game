@@ -2,6 +2,8 @@ import "phaser";
 import config from "../Config/config";
 import Player from "../Objects/player";
 import Sprite from "../Objects/sprite";
+import FollowPlugin from 'phaser-plugin-follow'
+
 
 const REDTILE = 2;
 const YELLOWTILE = 3;
@@ -36,93 +38,60 @@ export default class GameScene extends Phaser.Scene {
     this.scale.pageAlignVertically = true;
   }
 
-  eliminarExpresion(){
-    expresion.destroy()
+  eliminarExpresion() {
+    expresion.destroy();
     console.log("Vencio tiempo alerta");
   }
 
-  animexpresions(){
-    this.anims.create({
-      key: "silencio",
-      frames: this.anims.generateFrameNumbers("expresiones", { start: 8, end: 15 }),
-      frameRate: 10,
-      repeat: 1
-    });
-    this.anims.create({
-      key: "exclamacion",
-      frames: this.anims.generateFrameNumbers("expresiones", { start: 16, end: 23 }),
-      frameRate: 10,
-      repeat: 1
-    });
-
-    this.anims.create({
-      key: "interrogacion",
-      frames: this.anims.generateFrameNumbers("expresiones", { start: 24, end: 31 }),
-      frameRate: 10,
-      repeat: 1
-    });
-
-  }
-
-  expresiones(x, y, name) {
-    expresion = this.add.sprite(x, y, 'expresiones', 1);
-    this.anims.play(name, true);
-    this.time.delayedCall(50, this.prueba, [], this);
-  }
-  
-
   create() {
     // create cursors keys.
-    this.animexpresions();
+
     // creation of "level" tilemap
     this.map = this.make.tilemap({
       key: "level"
     });
 
-    jumper = this.physics.add.sprite(500, 400, "jumper", 0)
 
-    jumper.body.setAllowGravity(false);
-    
-    
     var image = this.add.image(300, 1273, "bigMirror");
-    
-    
+
     // add tiles to tilemap
     let tile = this.map.addTilesetImage("tileset01", "tile");
 
     // which layers should we render? That's right, "layer01"
     this.layer = this.map.createStaticLayer("layer01", tile);
 
+
+    jumper = this.physics.add.sprite(500, 400, "jumper", 0);
+
     // which tiles will collide? Tiles from 1 to 3. Water won't be checked for collisions
     this.layer.setCollisionBetween(1, 6);
 
     // ¡Agregamos al heroe!
-    this.hero = new Player(this, 100, 100);
+    this.hero = new Player(this, 100, 400);
 
     // Para que choque en las paredes
     this.physics.add.collider(this.hero.sprite, this.layer);
 
-
-    
     this.cameras.main.setBounds(0, 0, 3200, 3200);
 
     // make the camera follow the hero
     this.cameras.main.startFollow(this.hero.sprite);
   }
 
-
   // method to be executed at each frame
   update() {
     this.hero.update(gravityInvert);
     this.layer.setTileIndexCallback(REDTILE, ColliderRedTile, this);
     this.layer.setTileIndexCallback(YELLOWTILE, ColliderYellowTile, this);
-  
+
     if (trampolin === true) {
       this.hero.sprite.body.setVelocityY(gravityInvert * -500);
       trampolin = false;
-      this.expresiones(this.hero.sprite.x+10+34, this.hero.sprite.y-10-34, 'interrogacion');
- 
-      
+      this.hero.expresion(
+        this.hero.sprite.x + 10 + 34,
+        this.hero.sprite.y - 10 - 34,
+        "interrogacion"
+      );
     }
 
     if (haveGravityChange === true) {

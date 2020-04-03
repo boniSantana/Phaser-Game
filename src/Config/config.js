@@ -1,9 +1,13 @@
 import "phaser";
 import GameScene from "../Scenes/GameScene";
+import FollowPlugin from 'phaser-plugin-follow'
+
 
 export default {
   // width of the game, in pixels
-
+  plugins: {
+    scene: [{ key: 'FollowPlugin', plugin: PhaserFollowPlugin, mapping: 'follow' }]
+  },
   type: Phaser.AUTO,
   parent: "phaser-example",
   pixelArt: false,
