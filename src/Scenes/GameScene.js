@@ -91,7 +91,7 @@ export default class GameScene extends Phaser.Scene {
     ) {
       if (spriteIsAlived === false) {
         console.log("Make sprite");
-        this.mirrorEnemy = new Sprite(this, 487, 1300, "mirrorCopy");
+        this.mirrorEnemy = new Sprite(this, 487, 1370, "mirrorCopy");
         this.physics.add.collider(this.mirrorEnemy.sprite, this.layer);
 
         spriteIsAlived = true;
