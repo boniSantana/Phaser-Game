@@ -99,6 +99,15 @@ export default class PreloaderScene extends Phaser.Scene {
       frameHeight: 73,
     });
     this.load.image('bigMirror', 'assets/tilesets/bigMirror.png');
+    this.load.spritesheet('jumper', 'assets/spritesheets/enemies/jumper.png',
+    {
+      frameWidth: 186,
+      frameHeight: 35,
+    });
+    this.load.spritesheet('expresiones', 'assets/spritesheets/Expresiones.png',{
+      frameWidth: 32,
+      frameHeight: 32,
+    });
 
   }
 
