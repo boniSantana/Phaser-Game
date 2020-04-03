@@ -3,18 +3,18 @@
  * response to WASD/arrow keys. Call its update method from the scene's update and call its destroy
  * method when you're done with the player.
  */
-
+let timer = false;
+let timedEvent;
 export default class Player {
   constructor(scene, x, y) {
     this.scene = scene;
-
+    
     // Create the animations we need from the player spritesheet
     const anims = scene.anims;
     anims.create({
       key: "left",
       frames: anims.generateFrameNumbers("hero", { start: 2, end: 0 }),
       frameRate: 10,
-      repeat: 1
     });
 
     anims.create({
@@ -40,6 +40,13 @@ export default class Player {
     anims.create({
       key: "down",
       frames: anims.generateFrameNumbers("hero", { start: 7, end: 8 }),
+      frameRate: 10,
+      repeat: 1
+    });
+
+    anims.create({
+      key: "sleep",
+      frames: anims.generateFrameNumbers("hero", { start: 9, end: 11 }),
       frameRate: 10,
       repeat: 1
     });
@@ -78,11 +85,39 @@ export default class Player {
   canJump(gravityState, onGround, onRoof, keys) {
     if (gravityState === 1 && onGround && (keys.up.isDown || keys.w.isDown)) {
       return true;
-    } else if (gravityState === -1 && onRoof && (keys.up.isDown || keys.w.isDown)) {
+    } else if (
+      gravityState === -1 &&
+      onRoof &&
+      (keys.up.isDown || keys.w.isDown)
+    ) {
       return true;
     } else {
       return false;
     }
+  }
+
+  canSleep(onGround, onRoof, keys) {
+    // Si toco el piso o el techo  y no estoy tocando ninguna tecla, puedo dormir.
+    if (
+      (onRoof || onGround) &&
+      !keys.right.isDown &&
+      !keys.left.isDown &&
+      !keys.up.isDown &&
+      !keys.down.isDown &&
+      !keys.w.isDown &&
+      !keys.s.isDown &&
+      !keys.a.isDown &&
+      !keys.d.isDown
+    ) {
+      return true;
+    } else {
+      return false;
+    }
+  }
+
+  onEvent() {
+    console.log("Te dormiste!");
+    this.sprite.anims.play("sleep", true);
   }
 
   update(gravitychange) {
@@ -111,8 +146,17 @@ export default class Player {
 
     // Only allow the player to jump if they are on the ground
     if (this.canJump(gravitychange, onGround, onRoof, keys)) {
-      console.log("Gravity change vale:", gravitychange);
+      console.log("Saltaste!");
       sprite.setVelocityY(-500 * gravitychange);
+    }
+
+    if (this.canSleep(onGround, onRoof, keys) && timer === false) {
+      timer = true;
+      timedEvent = this.scene.time.delayedCall(3000, this.onEvent, [], this);
+    } 
+    else if (this.canSleep(onGround, onRoof, keys) === false && timer === true) {
+      timer = false;
+      timedEvent.remove();
     }
   }
 
