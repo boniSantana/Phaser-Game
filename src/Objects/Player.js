@@ -4,77 +4,113 @@
  * method when you're done with the player.
  */
 
-
-
 let timer = false;
 let timedEvent2;
-export default class Player {
-  constructor(scene, x, y) {
-    this.scene = scene;
-    
-    // Create the animations we need from the player spritesheet
-    const anims = scene.anims;
 
-      anims.create({
-        key: "silencio",
-        frames: anims.generateFrameNumbers("expresiones", { start: 8, end: 15 }),
-        frameRate: 10,
-        repeat: 1
-      });
-      anims.create({
-        key: "exclamacion",
-        frames: anims.generateFrameNumbers("expresiones", { start: 16, end: 23 }),
-        frameRate: 10,
-        repeat: 1
-      });
-  
-      anims.create({
-        key: "interrogacion",
-        frames: anims.generateFrameNumbers("expresiones", { start: 24, end: 31 }),
-        frameRate: 10,
-        repeat: 1
-      });
-  
+/**
+ * @typedef {Object} Keys
+ * @property {Phaser.Input.Keyboard.Key} up
+ * @property {Phaser.Input.Keyboard.Key} left
+ * @property {Phaser.Input.Keyboard.Key} down
+ * @property {Phaser.Input.Keyboard.Key} right
+ * @property {Phaser.Input.Keyboard.Key} w
+ * @property {Phaser.Input.Keyboard.Key} a
+ * @property {Phaser.Input.Keyboard.Key} s
+ * @property {Phaser.Input.Keyboard.Key} d
+ */
 
-    anims.create({
-      key: "left",
-      frames: anims.generateFrameNumbers("hero", { start: 2, end: 0 }),
+/**
+ * @param {Phaser.Scene} scene
+ */
+function generateAnims(scene) {
+  const expressionAnims = [
+    {
+      key: "silencio",
+      frames: scene.anims.generateFrameNumbers("expresiones", {
+        start: 8,
+        end: 15,
+      }),
       frameRate: 10,
-    });
+      repeat: 1,
+    },
+    {
+      key: "exclamacion",
+      frames: scene.anims.generateFrameNumbers("expresiones", {
+        start: 16,
+        end: 23,
+      }),
+      frameRate: 10,
+      repeat: 1,
+    },
+    {
+      key: "interrogacion",
+      frames: scene.anims.generateFrameNumbers("expresiones", {
+        start: 24,
+        end: 31,
+      }),
+      frameRate: 10,
+      repeat: 1,
+    },
+  ];
 
-    anims.create({
+  const heroAnims = [
+    {
+      key: "left",
+      frames: scene.anims.generateFrameNumbers("hero", { start: 2, end: 0 }),
+      frameRate: 10,
+    },
+    {
       key: "turn",
       frames: [{ key: "hero", frame: 2 }],
-      frameRate: 20
-    });
-
-    anims.create({
+      frameRate: 20,
+    },
+    {
       key: "right",
-      frames: anims.generateFrameNumbers("hero", { start: 2, end: 4 }),
+      frames: scene.anims.generateFrameNumbers("hero", { start: 2, end: 4 }),
       frameRate: 10,
-      repeat: 1
-    });
-
-    anims.create({
+      repeat: 1,
+    },
+    {
       key: "up",
-      frames: anims.generateFrameNumbers("hero", { start: 5, end: 6 }),
+      frames: scene.anims.generateFrameNumbers("hero", { start: 5, end: 6 }),
       frameRate: 30,
-      repeat: 1
-    });
-
-    anims.create({
+      repeat: 1,
+    },
+    {
       key: "down",
-      frames: anims.generateFrameNumbers("hero", { start: 7, end: 8 }),
+      frames: scene.anims.generateFrameNumbers("hero", { start: 7, end: 8 }),
       frameRate: 10,
-      repeat: 1
-    });
-
-    anims.create({
+      repeat: 1,
+    },
+    {
       key: "sleep",
-      frames: anims.generateFrameNumbers("hero", { start: 9, end: 11 }),
+      frames: scene.anims.generateFrameNumbers("hero", { start: 9, end: 11 }),
       frameRate: 10,
-      repeat: 1
-    });
+      repeat: 1,
+    },
+  ];
+
+  return [...expressionAnims, ...heroAnims];
+}
+
+/**
+ * @class
+ */
+export default class Player {
+  /**
+   * @constructor
+   *
+   * @param {Phaser.Scene} scene
+   * @param {number} x
+   * @param {number} y
+   */
+  constructor(scene, x, y) {
+    this.keys.this.scene = scene;
+
+    const anims = generateAnims(this.scene);
+
+    // Create the animations we need from the player spritesheet
+    anims.forEach((anim) => scene.anims.create(anim));
 
     // Create the physics-based sprite that we will move around and animate
     this.sprite = scene.physics.add
@@ -91,8 +127,12 @@ export default class Player {
       W,
       A,
       D,
-      S
+      S,
     } = Phaser.Input.Keyboard.KeyCodes;
+
+    /**
+     * @type {Keys}
+     */
     this.keys = scene.input.keyboard.addKeys({
       left: LEFT,
       right: RIGHT,
@@ -101,55 +141,57 @@ export default class Player {
       w: W,
       a: A,
       d: D,
-      s: S
+      s: S,
     });
 
     // player.setBounce(0.5);
   }
 
   canJump(gravityState, onGround, onRoof, keys) {
-    if (gravityState === 1 && onGround && (keys.up.isDown || keys.w.isDown)) {
-      return true;
-    } else if (
-      gravityState === -1 &&
-      onRoof &&
-      (keys.up.isDown || keys.w.isDown)
-    ) {
-      return true;
-    } else {
-      return false;
-    }
+    const isJumpingKeyPressed = keys.up.isDown || keys.w.isDown;
+
+    const jumpOnGround = gravityState === 1 && onGround && isJumpingKeyPressed;
+    const jumpOnRoof = gravityState === -1 && onRoof && isJumpingKeyPressed;
+
+    return jumpOnGround || jumpOnRoof;
   }
 
+  /**
+   * @param {boolean} onGround
+   * @param {boolean} onRoof
+   * @param {Keys} keys
+   * @returns {boolean}
+   */
   canSleep(onGround, onRoof, keys) {
     // Si toco el piso o el techo  y no estoy tocando ninguna tecla, puedo dormir.
-    if (
-      (onRoof || onGround) &&
-      !keys.right.isDown &&
-      !keys.left.isDown &&
-      !keys.up.isDown &&
-      !keys.down.isDown &&
-      !keys.w.isDown &&
-      !keys.s.isDown &&
-      !keys.a.isDown &&
-      !keys.d.isDown
-    ) {
-      return true;
-    } else {
-      return false;
-    }
+    const notOnAir = onRoof || onGround;
+    const anyKeyDown =
+      keys.right.isDown ||
+      keys.left.isDown ||
+      keys.up.isDown ||
+      keys.down.isDown ||
+      keys.W.isDown ||
+      keys.A.isDown ||
+      keys.S.isDown ||
+      keys.D.isDown;
+
+    return notOnAir && !anyKeyDown;
   }
 
   onEvent() {
-    console.log("Te dormiste!");
     this.sprite.anims.play("sleep", true);
   }
 
   update(gravitychange) {
+    /**
+     * @type {Keys}
+     */
     const keys = this.keys;
     const sprite = this.sprite;
+
     const onGround = sprite.body.blocked.down;
     const onRoof = sprite.body.blocked.up;
+
     const acceleration = onGround ? 600 : 200;
 
     // Apply horizontal acceleration when left/a or right/d are applied
@@ -178,24 +220,23 @@ export default class Player {
     if (this.canSleep(onGround, onRoof, keys) && timer === false) {
       timer = true;
       timedEvent2 = this.scene.time.delayedCall(3000, this.onEvent, [], this);
-    } 
-    else if (this.canSleep(onGround, onRoof, keys) === false && timer === true) {
+    } else if (
+      this.canSleep(onGround, onRoof, keys) === false &&
+      timer === true
+    ) {
       timer = false;
       timedEvent2.remove();
     }
   }
-  
 
-  eliminarExpresion ()
-  {
+  eliminarExpresion() {
     console.log("Eliminar expresion");
     this.scene.follow.remove(this.animaExpresion);
     this.animaExpresion.destroy();
   }
 
-
   expresion(x, y, name) {
-    this.animaExpresion = this.scene.add.sprite(x, y, 'expresiones', 1);
+    this.animaExpresion = this.scene.add.sprite(x, y, "expresiones", 1);
     this.animaExpresion.anims.play(name, true);
 
     this.scene.follow.add(this.animaExpresion, {
@@ -203,14 +244,13 @@ export default class Player {
       offsetX: 20,
       offsetY: -20,
       rotate: false,
-      rotateOffset: false
+      rotateOffset: false,
     });
 
     this.scene.time.delayedCall(600, this.eliminarExpresion, [], this);
   }
 
   destroy() {
-    
     this.sprite.destroy();
   }
 }
