@@ -1,5 +1,5 @@
 import "phaser";
-import Player from "../Objects/player";
+import Player from "../Objects/Player";
 
 
 const REDTILE = 2;
