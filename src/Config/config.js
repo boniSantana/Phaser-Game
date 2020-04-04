@@ -1,5 +1,5 @@
 import "phaser";
-import GameScene from "../Scenes/GameScene";
+import GameScene from "../Scenes/GameScene1";
 import FollowPlugin from 'phaser-plugin-follow'
 
 
@@ -26,7 +26,7 @@ export default {
     default: "arcade",
     arcade: {
       gravity: { y: 600 },
-      debug: false
+      debug: true
     }
   },
 
