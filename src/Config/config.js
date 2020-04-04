@@ -1,12 +1,10 @@
 import "phaser";
-import GameScene from "../Scenes/GameScene1";
-import FollowPlugin from 'phaser-plugin-follow'
-
+import FollowPlugin from "phaser-plugin-follow";
 
 export default {
   // width of the game, in pixels
   plugins: {
-    scene: [{ key: 'FollowPlugin', plugin: PhaserFollowPlugin, mapping: 'follow' }]
+    scene: [{ key: "FollowPlugin", plugin: FollowPlugin, mapping: "follow" }],
   },
   type: Phaser.AUTO,
   parent: "phaser-example",
@@ -20,14 +18,14 @@ export default {
     autoCenter: Phaser.Scale.CENTER_BOTH,
     parent: "thegame",
     width: 800,
-    height: 600
+    height: 600,
   },
   physics: {
     default: "arcade",
     arcade: {
       gravity: { y: 600 },
-      debug: true
-    }
+      debug: true,
+    },
   },
 
   // hero gravity
@@ -57,5 +55,5 @@ export default {
   // trampoline tile impulse
   trampolineImpulse: 500,
 
-  loaderPath: "assets/"
+  loaderPath: "assets/",
 };
