@@ -7,7 +7,7 @@
 
 
 let timer = false;
-let timedEvent;
+let timedEvent2;
 export default class Player {
   constructor(scene, x, y) {
     this.scene = scene;
@@ -155,18 +155,18 @@ export default class Player {
     // Apply horizontal acceleration when left/a or right/d are applied
     if (keys.left.isDown || keys.a.isDown) {
       sprite.anims.play("left", true);
-      sprite.setAccelerationX(-acceleration);
+      sprite.setVelocityX(-acceleration);
 
       // No need to have a separate set of graphics for running to the left & to the right. Instead
       // we can just mirror the sprite.
     } else if (keys.right.isDown || keys.d.isDown) {
       sprite.anims.play("right", true);
-      sprite.setAccelerationX(acceleration);
+      sprite.setVelocityX(acceleration);
     } else if (keys.down.isDown || keys.s.isDown) {
       sprite.anims.play("down", true);
-      sprite.setAccelerationX(0);
+      sprite.setVelocityX(0);
     } else {
-      sprite.setAccelerationX(0);
+      sprite.setVelocityX(0);
     }
 
     // Only allow the player to jump if they are on the ground
@@ -177,13 +177,22 @@ export default class Player {
 
     if (this.canSleep(onGround, onRoof, keys) && timer === false) {
       timer = true;
-      timedEvent = this.scene.time.delayedCall(3000, this.onEvent, [], this);
+      timedEvent2 = this.scene.time.delayedCall(3000, this.onEvent, [], this);
     } 
     else if (this.canSleep(onGround, onRoof, keys) === false && timer === true) {
       timer = false;
-      timedEvent.remove();
+      timedEvent2.remove();
     }
   }
+  
+
+  eliminarExpresion ()
+  {
+    console.log("Eliminar expresion");
+    this.scene.follow.remove(this.animaExpresion);
+    this.animaExpresion.destroy();
+  }
+
 
   expresion(x, y, name) {
     this.animaExpresion = this.scene.add.sprite(x, y, 'expresiones', 1);
@@ -198,13 +207,6 @@ export default class Player {
     });
 
     this.scene.time.delayedCall(600, this.eliminarExpresion, [], this);
-  }
-
-  eliminarExpresion ()
-  {
-    console.log("Eliminar expresion");
-    this.scene.follow.remove(this.animaExpresion);
-    this.animaExpresion.destroy();
   }
 
   destroy() {
