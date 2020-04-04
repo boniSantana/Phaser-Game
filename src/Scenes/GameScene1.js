@@ -47,14 +47,15 @@ export default class GameScene1 extends GameScene {
 
     // which tiles will collide? Tiles from 1 to 3. Water won't be checked for collisions
     this.prueba = this.layer.setCollisionBetween(1, 6);
-
-    // ¡Agregamos al heroe!
-    this.hero = new Player(this, 100, 400);
+  
+    // ¡Inicializamos al heroe en el SpawnPoint! 
+    const spawnPoint = this.map.findObject("Objects", obj => obj.name === "Spawn Point");
+    this.hero = new Player(this, spawnPoint.x, spawnPoint.y);
 
     // Para que choque en las paredes
     this.physics.add.collider(this.hero.sprite, this.prueba);
 
-    this.cameras.main.setBounds(0, 0, 32 * 24, 32 * 20);
+    this.cameras.main.setBounds(0,0, this.map.widthInPixels, this.map.heightInPixels);
 
     // make the camera follow the hero
     this.cameras.main.startFollow(this.hero.sprite);
