@@ -1,24 +1,13 @@
 import "phaser";
 import Player from "../Objects/Player";
-
-const REDTILE = 2;
-const YELLOWTILE = 3;
-const BLUETILE = 4;
-
-const GRAVITY_NORMAL = 1;
-const GRAVITY_INVERTED = -1;
+import GameScene from "./GameScene";
 
 let trampolin = false;
 let haveGravityChange = false;
 
-export default class GameScene1 extends Phaser.Scene {
+export default class GameScene1 extends GameScene {
   constructor() {
     super("Episodio1");
-    this.gravityOrientation = 1;
-  }
-
-  invertGravity() {
-    return this.gravityOrientation * -1;
   }
 
   colliderTrampolin() {
@@ -27,7 +16,7 @@ export default class GameScene1 extends Phaser.Scene {
   }
 
   ColliderYellowTile(hero, tile) {
-    invertGravity();
+    this.invertGravity();
     console.log("Anduvo gravedad");
     haveGravityChange = true;
   }
@@ -79,8 +68,8 @@ export default class GameScene1 extends Phaser.Scene {
       })
       .setScrollFactor(0);
 
-    this.layer.setTileIndexCallback(REDTILE, this.colliderTrampolin, this);
-    this.layer.setTileIndexCallback(YELLOWTILE, this.ColliderYellowTile, this);
+    this.layer.setTileIndexCallback(GameScene.REDTILE, this.colliderTrampolin, this);
+    this.layer.setTileIndexCallback(GameScene.YELLOWTILE, this.ColliderYellowTile, this);
     this.layer.setTileIndexCallback(4, this.door, this);
   }
 
@@ -98,7 +87,6 @@ export default class GameScene1 extends Phaser.Scene {
         "interrogacion"
       );
     }
-    // TRAMPOLIN
 
     if (haveGravityChange === true) {
       this.physics.world.gravity.y = 600 * this.gravityOrientation;
