@@ -80,7 +80,6 @@ export default class Player {
     this.sprite = scene.physics.add
       .sprite(x, y, "hero", 1)
       .setDrag(1000, 0)
-      .setMaxVelocity(300, 400);
 
     // Track the arrow keys & WASD
     const {
@@ -150,7 +149,7 @@ export default class Player {
     const sprite = this.sprite;
     const onGround = sprite.body.blocked.down;
     const onRoof = sprite.body.blocked.up;
-    const acceleration = onGround ? 600 : 200;
+    const acceleration = onGround ? 400 : 200;
 
     // Apply horizontal acceleration when left/a or right/d are applied
     if (keys.left.isDown || keys.a.isDown) {
