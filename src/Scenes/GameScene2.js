@@ -1,18 +1,11 @@
 import "phaser";
 import Player from "../Objects/Player";
-
-
-const REDTILE = 2;
-const YELLOWTILE = 3;
-const BLUETILE = 4;
+import GameScene from "./GameScene";
 let trampolin = false;
 let gravityInvert = 1;
 let haveGravityChange = false;
-let spriteIsAlived = false;
-let jumper;
-let expresion;
 
-export default class GameScene2 extends Phaser.Scene {
+export default class GameScene2 extends GameScene {
   constructor() {
     super("Episodio2");
   }
@@ -35,73 +28,25 @@ export default class GameScene2 extends Phaser.Scene {
 
   door() {
     console.log ("Funciono");
-    this.scene.start('Episodio2');
+    this.scene.start('Episodio3');
   }
 
   create() {
     // create cursors keys.
 
-    // creation of "level" tilemap
-    this.map = this.make.tilemap({
-      key: "level2"
-    });
+    this.createMapAndHero("level2");
 
-    // add tiles to tilemap
-    let tile = this.map.addTilesetImage("tileset01", "tile");
+    this.createCameraMan (0,0);
 
-    // which layers should we render? That's right, "layer01"
-    this.layer = this.map.createDynamicLayer("layer01", tile);
-
-    // which tiles will collide? Tiles from 1 to 3. Water won't be checked for collisions
-    this.prueba = this.layer.setCollisionBetween(1, 6);
-
-    // ¡Inicializamos al heroe en el SpawnPoint! 
-    const spawnPoint = this.map.findObject("Objects", obj => obj.name === "Spawn Point");
-    this.hero = new Player(this, spawnPoint.x, spawnPoint.y);
-
-    // Para que choque en las paredes
-    this.physics.add.collider(this.hero.sprite, this.prueba);
-
-    this.cameras.main.setBounds(0, 0, 32*24, 32*20);
-
-    // make the camera follow the hero
-    this.cameras.main.startFollow(this.hero.sprite);
-
-    this.add
-      .text(16, 16, "Hola, soy yo.", {
-        font: "18px monospace",
-        fill: "#000000",
-        padding: { x: 20, y: 10 },
-        backgroundColor: "#ffffff"
-      })
-      .setScrollFactor(0);
-
-    this.layer.setTileIndexCallback(REDTILE, this.colliderTrampolin, this);
-    this.layer.setTileIndexCallback(YELLOWTILE, this.ColliderYellowTile, this);
-    this.layer.setTileIndexCallback(4, this.door, this);
+    this.createIndexCallbacks();
   
   }
 
   // method to be executed at each frame
   update() {
-    this.hero.update(gravityInvert);
+    this.hero.update(this.gravityInvert);
 
-    if (trampolin === true) {
-      trampolin = false;
-      this.hero.sprite.body.setVelocityY(gravityInvert * -500);
-
-      this.hero.expresion(
-        this.hero.sprite.x + 10 + 34,
-        this.hero.sprite.y - 10 - 34,
-        "interrogacion"
-      );
-    }
-    // TRAMPOLIN
-
-    if (haveGravityChange === true) {
-      this.physics.world.gravity.y = 600 * gravityInvert;
-      this.hero.sprite.setFlipY(gravityInvert === -1 ? true : false);
-      haveGravityChange = false;
-    }
+    this.checkCollidesChanges();
+    
   }
 }

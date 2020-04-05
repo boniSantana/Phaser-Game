@@ -90,7 +90,10 @@ export default class PreloaderScene extends Phaser.Scene {
     //Load assets GameScene
     this.load.tilemapTiledJSON("level", "assets/tilemaps/level.json");
     this.load.tilemapTiledJSON("level2", "assets/tilemaps/level2.json");
+    this.load.tilemapTiledJSON("level3", "assets/tilemaps/level3.json");
+    this.load.tilemapTiledJSON("level4", "assets/tilemaps/level4.json");
     this.load.image("tile", "assets/tilesets/tile.png");
+    this.load.image("desvanecer", "assets/tilesets/Desvanecer.png");
     this.load.spritesheet("hero", "assets/spritesheets/hero.png", {
       frameWidth: 38,
       frameHeight: 37,
