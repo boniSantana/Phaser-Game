@@ -1,8 +1,11 @@
 import Player from "../Objects/Player";
 
 let trampolin = false;
-let haveGravityChange = false;
-let gravityInvert = 1;
+
+/**
+ * @typedef {Phaser.Tilemaps.StaticTilemapLayer | Phaser.Tilemaps.DynamicTilemapLayer} TilemapLayer
+ */
+
 export default class GameScene extends Phaser.Scene {
   static TILEPARED = 1; // Negro, pared.
   static TILETRAMPOLIN = 2; // Rojo
@@ -15,6 +18,7 @@ export default class GameScene extends Phaser.Scene {
   static TILEREBORN = 9; // marron
   static TILEDIEZ = 10; // Cian
   static TILELLAVE = 11; // Magenta
+
   static GRAVITY_NORMAL = 1;
   static GRAVITY_INVERTED = -1;
 
@@ -23,97 +27,143 @@ export default class GameScene extends Phaser.Scene {
    */
   constructor(title) {
     super(title);
-    this.gravityOrientation = this.GRAVITY_NORMAL;
+    this.gravityOrientation = GameScene.GRAVITY_NORMAL;
+
+    /**
+     * @type {TilemapLayer[]}
+     */
+    this.layers = [];
   }
 
-
-  colliderTrampolin() {
-    trampolin = true;
-    console.log("Entre");
-  }
-
-  ColliderGravedad(hero, tile) {
-    this.invertGravity();
-    console.log("Anduvo gravedad");
-    haveGravityChange = true;
-  }
-
-  ColliderDoor() {
-    console.log("Funciono");
-    this.scene.start("Episodio2");
-  }
-
-  ColliderDesaparecer() {
-    console.log("ColliderDesaparecer");
-  }
-
+  /**
+   * @param {string} key
+   */
   createMapAndHero(key) {
+    this.map = this.createMap(key);
+    this.hero = this.createHeroAtSpawnPoint(this.map);
+
+    this.setCollisions();
+  }
+
+  /**
+   * @param {string} key
+   * @returns {Phaser.Tilemaps.Tilemap}
+   */
+  createMap(key) {
     // creation of "level" tilemap
-    this.map = this.make.tilemap({
-      key: key
-    });
+    const map = this.make.tilemap({ key: key });
 
     // add tiles to tilemap
-    let tile = this.map.addTilesetImage("tileset01", "tile");
+    let tile = map.addTilesetImage("tileset01", "tile");
 
-    // which layers should we render? That's right, "layer01"
-    this.layer = this.map.createStaticLayer("layer01", tile);
-    this.layer2 = this.map.createStaticLayer("layer02", tile);
+    this.layers.push(map.createStaticLayer("layer01", tile));
+    this.layers.push(map.createStaticLayer("layer02", tile));
 
-    // ¡Inicializamos al heroe en el SpawnPoint!
-    const spawnPoint = this.map.findObject(
-      "Objects",
-      obj => obj.name === "Spawn Point"
-    );
-    
-    this.hero = new Player(this, spawnPoint.x, spawnPoint.y);
-
-    this.layer.setCollisionBetween (1, 9);
-    this.physics.world.addCollider(this.hero.sprite, this.layer);
-
-    this.layer2.setCollisionBetween (1, 9);
-    this.physics.world.addCollider(this.hero.sprite, this.layer2);
-
+    return map;
   }
 
-  createCameraMan(x,y) {
+  /**
+   * @param {Phaser.Tilemaps.Tilemap} map
+   */
+  createHeroAtSpawnPoint(map) {
+    // ¡Inicializamos al heroe en el SpawnPoint!
+    const spawnPoint = map.findObject(
+      "Objects",
+      (obj) => obj.name === "Spawn Point"
+    );
 
-    this.cameras.main.setBounds(x,y, this.map.widthInPixels, this.map.heightInPixels);
+    return new Player(this, spawnPoint.x, spawnPoint.y);
+  }
 
-    // make the camera follow the hero
-    this.cameras.main.startFollow(this.hero.sprite);
+  setCollisions() {
+    const layer01 = this.layers[0];
+    layer01.setCollisionBetween(1, 9);
+    this.physics.world.addCollider(this.hero.sprite, layer01);
+
+    const layer02 = this.layers[1];
+    layer02.setCollisionBetween(1, 9);
+    this.physics.world.addCollider(this.hero.sprite, layer02);
+  }
+
+  setCameraMan(x, y, width, height) {
+    this.cameras.main.setBounds(x, y, width, height);
+    this.cameras.main.startFollow(this.hero.sprite); // make the camera follow the hero
+  }
+
+  /**
+   * @param {TilemapLayer} layer
+   */
+  setTrampolinCollider(layer) {
+    const collider = () => {
+      console.log("Entre");
+      const heroSize = 34;
+      const expressionOffset = 10;
+      const jumpHeight = 400;
+
+      this.hero.sprite.body.setVelocityY(this.gravityOrientation * -jumpHeight);
+
+      this.hero.expresion(
+        this.hero.sprite.x + expressionOffset + heroSize,
+        this.hero.sprite.y - expressionOffset - heroSize,
+        "interrogacion"
+      );
+    };
+
+    layer.setTileIndexCallback(GameScene.TILETRAMPOLIN, collider, this);
+  }
+
+  /**
+   * @param {TilemapLayer} layer
+   */
+  setGravedadCollider(layer) {
+    const gravityValue = 600;
+
+    const collider = () => {
+      this.invertGravity();
+      this.physics.world.gravity.y = gravityValue * this.gravityOrientation;
+      this.hero.sprite.setFlipY(
+        this.gravityOrientation === GameScene.GRAVITY_INVERTED
+      );
+    };
+
+    layer.setTileIndexCallback(GameScene.TILEGRAVEDAD, collider, this);
+  }
+
+  /**
+   * @param {TilemapLayer} layer
+   */
+  setDoorCollider(layer) {
+    const collider = () => {
+      console.log("Funciono");
+      this.scene.start("Episodio2");
+    };
+
+    layer.setTileIndexCallback(GameScene.TILEDOOR, collider, this);
+  }
+
+  /**
+   * @param {TilemapLayer} layer
+   */
+  setDesaparecerCollider(layer) {
+    const collider = () => {
+      console.log("ColliderDesaparecer");
+    };
+
+    layer.setTileIndexCallback(GameScene.TILEDESAPARECER, collider, this);
   }
 
   createIndexCallbacks() {
+    const layer01 = this.layers[0];
 
-    this.layer.setTileIndexCallback(GameScene.TILETRAMPOLIN, this.colliderTrampolin, this);
-    this.layer.setTileIndexCallback(GameScene.TILEGRAVEDAD, this.ColliderGravedad, this);
-    this.layer.setTileIndexCallback(GameScene.TILEDOOR, this.ColliderDoor, this);
-    this.layer2.setTileIndexCallback(GameScene.TILEDESAPARECER, this.ColliderDesaparecer, this);
+    this.setTrampolinCollider(layer01);
+    this.setGravedadCollider(layer01);
+    this.setDoorCollider(layer01);
 
+    const layer02 = this.layers[1];
+    this.setDesaparecerCollider(layer02);
   }
 
-  checkCollidesChanges() {
-    if (trampolin === true) {
-      trampolin = false;
-      this.hero.sprite.body.setVelocityY(this.gravityOrientation * -800);
-
-      this.hero.expresion(
-        this.hero.sprite.x + 10 + 34,
-        this.hero.sprite.y - 10 - 34,
-        "interrogacion"
-      );
-    }
-    // TRAMPOLIN
-
-    if (haveGravityChange === true) {
-      this.physics.world.gravity.y = 600 * this.gravityOrientation;
-      this.hero.sprite.setFlipY(this.gravityOrientation === this.GRAVITY_INVERTED ? true : false);
-      haveGravityChange = false;
-    }
-  }
-  
   invertGravity() {
-    return this.gravityOrientation * -1;
+    this.gravityOrientation = this.gravityOrientation * -1;
   }
 }

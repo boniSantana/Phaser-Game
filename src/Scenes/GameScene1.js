@@ -1,12 +1,10 @@
 import "phaser";
-import Player from "../Objects/Player";
 import GameScene from "./GameScene";
 
 export default class GameScene1 extends GameScene {
   constructor() {
     super("Episodio1");
   }
-
 
   preload() {
     this.scale.pageAlignHorizontally = true;
@@ -15,13 +13,9 @@ export default class GameScene1 extends GameScene {
 
   create() {
     // create cursors keys.
-
     this.createMapAndHero("level");
-
-    this.createCameraMan (0,0);
-
+    this.setCameraMan(0, 0, this.map.widthInPixels, this.map.heightInPixels);
     this.createIndexCallbacks();
-  
 
     this.add
       .text(16, 16, "Hola, soy yo.", {
@@ -31,13 +25,10 @@ export default class GameScene1 extends GameScene {
         backgroundColor: "#ffffff",
       })
       .setScrollFactor(0);
-  
   }
 
   // method to be executed at each frame
   update() {
     this.hero.update(this.gravityOrientation);
-
-    this.checkCollidesChanges();
   }
 }
