@@ -85,14 +85,19 @@ export default class PreloaderScene extends Phaser.Scene {
     this.load.image('phaserLogo', 'assets/logo/logo.png');
     this.load.image('box', 'assets/ui/grey_box.png');
     this.load.image('checkedBox', 'assets/ui/blue_boxCheckmark.png');
-    this.load.audio('bgMusic', ['assets/music/TownTheme.mp3']);
+    this.load.audio('bgMusic', ['assets/music/TownTheme.mp4']);
 
     //Load assets GameScene
     this.load.tilemapTiledJSON("level", "assets/tilemaps/level.json");
     this.load.tilemapTiledJSON("level2", "assets/tilemaps/level2.json");
     this.load.tilemapTiledJSON("level3", "assets/tilemaps/level3.json");
     this.load.tilemapTiledJSON("level4", "assets/tilemaps/level4.json");
-    this.load.image("tile", "assets/tilesets/tile.png");
+    this.load.spritesheet("tile", "assets/tilesets/tile.png", {
+      frameWidth: 32,
+      frameHeight: 32,
+    });
+
+
     this.load.image("desvanecer", "assets/tilesets/Desvanecer.png");
     this.load.spritesheet("hero", "assets/spritesheets/hero.png", {
       frameWidth: 38,
@@ -112,6 +117,11 @@ export default class PreloaderScene extends Phaser.Scene {
       frameWidth: 32,
       frameHeight: 32,
     });
+    this.load.spritesheet('spawnGlitter', 'assets/spritesheets/SpawnGlitter.png', {
+      frameWidth: 98,
+      frameHeight: 181,
+    });
+
 
   }
 

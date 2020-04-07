@@ -4,7 +4,8 @@
     {
      "export":
         {
-         "format":"json"
+         "format":"json",
+         "target":"."
         }
     },
  "height":20,
@@ -48,8 +49,8 @@
                  "type":"",
                  "visible":true,
                  "width":38,
-                 "x":96,
-                 "y":386
+                 "x":94,
+                 "y":384
                 }],
          "opacity":1,
          "type":"objectgroup",

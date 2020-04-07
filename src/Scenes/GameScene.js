@@ -28,7 +28,11 @@ export default class GameScene extends Phaser.Scene {
   constructor(title) {
     super(title);
     this.gravityOrientation = GameScene.GRAVITY_NORMAL;
-
+    this.colliderTrampolin = false;
+    this.colliderDesaparecer = false;
+    this.stateNormal = true;
+    this.spawnPointX = 0;
+    this.spawnPointY = 0;
     /**
      * @type {TilemapLayer[]}
      */
@@ -59,6 +63,8 @@ export default class GameScene extends Phaser.Scene {
     this.layers.push(map.createStaticLayer("layer01", tile));
     this.layers.push(map.createStaticLayer("layer02", tile));
 
+    this.tile = tile;
+
     return map;
   }
 
@@ -72,10 +78,14 @@ export default class GameScene extends Phaser.Scene {
       (obj) => obj.name === "Spawn Point"
     );
 
-    return new Player(this, spawnPoint.x, spawnPoint.y);
+    this.spawnPointX = spawnPoint.x;
+    this.spawnPointY = spawnPoint.y;
+    
+    return new Player(this, this.spawnPointX, this.spawnPointY);
   }
 
   setCollisions() {
+
     const layer01 = this.layers[0];
     layer01.setCollisionBetween(1, 9);
     this.physics.world.addCollider(this.hero.sprite, layer01);
@@ -98,10 +108,9 @@ export default class GameScene extends Phaser.Scene {
       console.log("Entre");
       const heroSize = 34;
       const expressionOffset = 10;
-      const jumpHeight = 400;
 
-      this.hero.sprite.body.setVelocityY(this.gravityOrientation * -jumpHeight);
-
+      this.colliderTrampolin = true;
+    
       this.hero.expresion(
         this.hero.sprite.x + expressionOffset + heroSize,
         this.hero.sprite.y - expressionOffset - heroSize,
@@ -129,24 +138,74 @@ export default class GameScene extends Phaser.Scene {
     layer.setTileIndexCallback(GameScene.TILEGRAVEDAD, collider, this);
   }
 
+
+  /**
+   * @param {TilemapLayer} layer
+   */
+  setEnanismoCollider(layer) {
+    const gravityValue = 600;
+
+    const collider = () => {
+
+      if (!this.hero.onGreenBlock)
+      {
+        this.hero.onGreenBlock = true;
+
+        if (this.stateNormal === true){
+          console.log("Chiquito");
+          this.hero.sprite.setScale(0.5);
+          this.stateNormal = false;
+        }
+        else {
+          console.log("Grandote");
+          this.hero.sprite.setScale(1);
+          this.stateNormal = true;
+        }
+      }
+    
+    };
+
+    layer.setTileIndexCallback(GameScene.TILEENANISMO, collider, this);
+  
+  }
   /**
    * @param {TilemapLayer} layer
    */
   setDoorCollider(layer) {
     const collider = () => {
-      console.log("Funciono");
-      this.scene.start("Episodio2");
+    
+      const count = this.registry.get("level") + 1;
+      console.log("count:", count);
+      this.scene.start("Episodio" + count);     
+      
     };
 
     layer.setTileIndexCallback(GameScene.TILEDOOR, collider, this);
   }
 
+/**
+   * @param {TilemapLayer} layer
+   */
+  setRebornCollider(layer) {
+    const collider = () => {
+    
+      this.hero.sprite.body.position.x = this.spawnPointX; // ¿funcionará?
+
+      
+    };
+
+    layer.setTileIndexCallback(GameScene.TILEREBORN, collider, this);
+  }
+
+  
   /**
    * @param {TilemapLayer} layer
    */
   setDesaparecerCollider(layer) {
     const collider = () => {
-      console.log("ColliderDesaparecer");
+
+      this.colliderDesaparecer = true;
+      
     };
 
     layer.setTileIndexCallback(GameScene.TILEDESAPARECER, collider, this);
@@ -158,6 +217,8 @@ export default class GameScene extends Phaser.Scene {
     this.setTrampolinCollider(layer01);
     this.setGravedadCollider(layer01);
     this.setDoorCollider(layer01);
+    this.setEnanismoCollider(layer01);
+    this.setRebornCollider(layer01);
 
     const layer02 = this.layers[1];
     this.setDesaparecerCollider(layer02);

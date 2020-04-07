@@ -108,7 +108,7 @@ export default class Player {
    */
   constructor(scene, x, y) {
     this.scene = scene;
-
+    this.onGreenBlock = false;
     const anims = generateAnims(this.scene);
 
     // Create the animations we need from the player spritesheet
@@ -253,6 +253,11 @@ export default class Player {
     });
 
     this.scene.time.delayedCall(600, this.eliminarExpresion, [], this);
+  }
+
+  heroTile () {
+    let tile = this.map.getTileAtWorldXY(this.sprite.x, this.sprite.y);
+    return tile.index;
   }
 
   destroy() {

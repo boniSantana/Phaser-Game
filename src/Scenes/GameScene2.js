@@ -11,12 +11,11 @@ export default class GameScene2 extends GameScene {
     this.scale.pageAlignVertically = true;
   }
 
-  door() {
-    console.log("Funciono");
-    this.scene.start("Episodio3");
-  }
 
   create() {
+
+    this.registry.set("level", 2);
+
     this.createMapAndHero("level2");
     this.setCameraMan(0, 0, this.map.widthInPixels, this.map.heightInPixels);
     this.createIndexCallbacks();
