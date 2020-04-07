@@ -108,7 +108,7 @@ export default class PreloaderScene extends Phaser.Scene {
       frameHeight: 73,
     });
     this.load.image('bigMirror', 'assets/tilesets/bigMirror.png');
-    this.load.spritesheet('jumper', 'assets/spritesheets/enemies/jumper.png',
+    this.load.spritesheet('jumperASD', 'assets/spritesheets/enemies/jumper.png',
     {
       frameWidth: 186,
       frameHeight: 35,
@@ -117,11 +117,11 @@ export default class PreloaderScene extends Phaser.Scene {
       frameWidth: 32,
       frameHeight: 32,
     });
-    this.load.spritesheet('spawnGlitter', 'assets/spritesheets/SpawnGlitter.png', {
+
+    this.load.spritesheet('spawnGlitter', 'assets/spritesheets/SpawnGlitter.png',{
       frameWidth: 98,
       frameHeight: 181,
     });
-
 
   }
 

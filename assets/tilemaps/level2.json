@@ -51,6 +51,18 @@
                  "width":38,
                  "x":125.5,
                  "y":576.5
+                }, 
+                {
+                 "gid":26,
+                 "height":181,
+                 "id":39,
+                 "name":"Glitter Point",
+                 "rotation":0,
+                 "type":"",
+                 "visible":true,
+                 "width":98,
+                 "x":94.3636363636364,
+                 "y":608.378787878788
                 }],
          "opacity":1,
          "type":"objectgroup",
@@ -59,7 +71,7 @@
          "y":0
         }],
  "nextlayerid":11,
- "nextobjectid":39,
+ "nextobjectid":40,
  "orientation":"orthogonal",
  "renderorder":"right-down",
  "tiledversion":"1.3.3",
@@ -115,6 +127,19 @@
          "tilecount":14,
          "tileheight":37,
          "tilewidth":38
+        }, 
+        {
+         "columns":14,
+         "firstgid":26,
+         "image":"..\/spritesheets\/SpawnGlitter.png",
+         "imageheight":181,
+         "imagewidth":1372,
+         "margin":0,
+         "name":"SpawnGlitter",
+         "spacing":0,
+         "tilecount":14,
+         "tileheight":181,
+         "tilewidth":98
         }],
  "tilewidth":32,
  "type":"map",
