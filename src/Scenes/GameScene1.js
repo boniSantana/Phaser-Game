@@ -18,7 +18,6 @@ export default class GameScene1 extends GameScene {
 
     this.setCameraMan(0, 0, this.map.widthInPixels, this.map.heightInPixels);
     this.createIndexCallbacks();
-
   }
 
   // method to be executed at each frame

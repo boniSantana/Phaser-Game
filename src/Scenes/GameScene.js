@@ -65,6 +65,22 @@ export default class GameScene extends Phaser.Scene {
 
     this.tile = tile;
 
+    /* BORRAR LUEGO DE DESCUBRIR COMO */
+    const GlitterPoint = map.findObject(
+      "Objects",
+      (obj) => obj.name === "Glitter Point"
+    );
+    /* ESTO*/
+
+    this.spawnGlitter = this.add.sprite(GlitterPoint.x, GlitterPoint.y, "spawnGlitter");
+
+    this.anims.create({
+      key: "spawnGlitter_animation",
+      frames: this.anims.generateFrameNumbers("spawnGlitter"),
+      frameRate: 12,
+      repeat: 1,
+    });
+
     return map;
   }
 
@@ -80,12 +96,11 @@ export default class GameScene extends Phaser.Scene {
 
     this.spawnPointX = spawnPoint.x;
     this.spawnPointY = spawnPoint.y;
-    
+
     return new Player(this, this.spawnPointX, this.spawnPointY);
   }
 
   setCollisions() {
-
     const layer01 = this.layers[0];
     layer01.setCollisionBetween(1, 9);
     this.physics.world.addCollider(this.hero.sprite, layer01);
@@ -110,7 +125,7 @@ export default class GameScene extends Phaser.Scene {
       const expressionOffset = 10;
 
       this.colliderTrampolin = true;
-    
+
       this.hero.expresion(
         this.hero.sprite.x + expressionOffset + heroSize,
         this.hero.sprite.y - expressionOffset - heroSize,
@@ -138,7 +153,6 @@ export default class GameScene extends Phaser.Scene {
     layer.setTileIndexCallback(GameScene.TILEGRAVEDAD, collider, this);
   }
 
-
   /**
    * @param {TilemapLayer} layer
    */
@@ -146,66 +160,65 @@ export default class GameScene extends Phaser.Scene {
     const gravityValue = 600;
 
     const collider = () => {
-
-      if (!this.hero.onGreenBlock)
-      {
+      if (!this.hero.onGreenBlock) {
         this.hero.onGreenBlock = true;
 
-        if (this.stateNormal === true){
+        if (this.stateNormal === true) {
           console.log("Chiquito");
           this.hero.sprite.setScale(0.5);
           this.stateNormal = false;
-        }
-        else {
+        } else {
           console.log("Grandote");
           this.hero.sprite.setScale(1);
           this.stateNormal = true;
         }
       }
-    
     };
 
     layer.setTileIndexCallback(GameScene.TILEENANISMO, collider, this);
-  
   }
+
+  /**
+   * @param {TilemapLayer} layer
+   */
+  setSpawnCollider(layer) {
+    const collider = () => {
+      this.spawnGlitter.anims.play("spawnGlitter_animation", true);
+    };
+
+    layer.setTileIndexCallback(GameScene.TILESPAWN, collider, this);
+  }
+
   /**
    * @param {TilemapLayer} layer
    */
   setDoorCollider(layer) {
     const collider = () => {
-    
       const count = this.registry.get("level") + 1;
       console.log("count:", count);
-      this.scene.start("Episodio" + count);     
-      
+      this.scene.start("Episodio" + count);
     };
 
     layer.setTileIndexCallback(GameScene.TILEDOOR, collider, this);
   }
 
-/**
+  /**
    * @param {TilemapLayer} layer
    */
   setRebornCollider(layer) {
     const collider = () => {
-    
       this.hero.sprite.body.position.x = this.spawnPointX; // ¿funcionará?
-
-      
     };
 
     layer.setTileIndexCallback(GameScene.TILEREBORN, collider, this);
   }
 
-  
   /**
    * @param {TilemapLayer} layer
    */
   setDesaparecerCollider(layer) {
     const collider = () => {
-
       this.colliderDesaparecer = true;
-      
     };
 
     layer.setTileIndexCallback(GameScene.TILEDESAPARECER, collider, this);
@@ -219,6 +232,7 @@ export default class GameScene extends Phaser.Scene {
     this.setDoorCollider(layer01);
     this.setEnanismoCollider(layer01);
     this.setRebornCollider(layer01);
+    this.setSpawnCollider(layer01);
 
     const layer02 = this.layers[1];
     this.setDesaparecerCollider(layer02);
