@@ -30,13 +30,6 @@ export default class GameScene1 extends GameScene {
       this.hero.sprite.body.setVelocityY(this.gravityOrientation * -jumpHeight);
     }
 
-    if (this.colliderDesaparecer === true) {
-      console.log("ColliderDesaparecer");
-      this.colliderDesaparecer = false;
-
-      this.layers[1].setCollision(GameScene.TILEDESAPARECER, false);
-      this.layers[1].setAlpha(0.5);
-    }
 
     if (
       this.hero.heroTile != GameScene.TILEENANISMO &&

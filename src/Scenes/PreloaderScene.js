@@ -85,7 +85,7 @@ export default class PreloaderScene extends Phaser.Scene {
     this.load.image('phaserLogo', 'assets/logo/logo.png');
     this.load.image('box', 'assets/ui/grey_box.png');
     this.load.image('checkedBox', 'assets/ui/blue_boxCheckmark.png');
-    this.load.audio('bgMusic', ['assets/music/TownTheme.mp4']);
+    this.load.audio('bgMusic', ['assets/music/TownTheme.mp3']);
 
     //Load assets GameScene
     this.load.tilemapTiledJSON("level", "assets/tilemaps/level.json");
@@ -120,8 +120,14 @@ export default class PreloaderScene extends Phaser.Scene {
 
     this.load.spritesheet('spawnGlitter', 'assets/spritesheets/SpawnGlitter.png',{
       frameWidth: 98,
-      frameHeight: 181,
+      frameHeight: 149,
     });
+
+    this.load.spritesheet('trap', 'assets/spritesheets/Trap.png',{
+      frameWidth: 64,
+      frameHeight: 32,
+    });
+
 
   }
 

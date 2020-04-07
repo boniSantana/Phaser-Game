@@ -59,11 +59,13 @@ export default class GameScene extends Phaser.Scene {
 
     // add tiles to tilemap
     let tile = map.addTilesetImage("tileset01", "tile");
+    let tileTrap = map.addTilesetImage("Trap", "trap");
 
     this.layers.push(map.createStaticLayer("layer01", tile));
-    this.layers.push(map.createStaticLayer("layer02", tile));
+    this.layers.push(map.createStaticLayer("layer02", tileTrap));
 
     this.tile = tile;
+    this.tileTrap = tileTrap;
 
     /* BORRAR LUEGO DE DESCUBRIR COMO */
     const GlitterPoint = map.findObject(
@@ -72,11 +74,22 @@ export default class GameScene extends Phaser.Scene {
     );
     /* ESTO*/
 
-    this.spawnGlitter = this.add.sprite(GlitterPoint.x, GlitterPoint.y, "spawnGlitter");
+    this.spawnGlitter = this.add.sprite(
+      GlitterPoint.x,
+      GlitterPoint.y,
+      "spawnGlitter"
+    );
 
     this.anims.create({
       key: "spawnGlitter_animation",
       frames: this.anims.generateFrameNumbers("spawnGlitter"),
+      frameRate: 12,
+      repeat: 1,
+    });
+
+    this.anims.create({
+      key: "tileTrap_animation",
+      frames: this.anims.generateFrameNumbers("tileTrap"),
       frameRate: 12,
       repeat: 1,
     });
@@ -113,6 +126,14 @@ export default class GameScene extends Phaser.Scene {
   setCameraMan(x, y, width, height) {
     this.cameras.main.setBounds(x, y, width, height);
     this.cameras.main.startFollow(this.hero.sprite); // make the camera follow the hero
+  }
+
+  timerTileDesaparecer() {
+    if (this.colliderDesaparecer === false) {
+      console.log("Entre timer");
+      this.layers[1].setCollision(1, false);
+      this.colliderDesaparecer = true;
+    }
   }
 
   /**
@@ -183,7 +204,14 @@ export default class GameScene extends Phaser.Scene {
    */
   setSpawnCollider(layer) {
     const collider = () => {
+      const offsetGlitter = 34;
       this.spawnGlitter.anims.play("spawnGlitter_animation", true);
+      this.spawnPointX = this.hero.sprite.body.x;
+      this.spawnPointY = this.hero.sprite.body.y;
+      this.spawnGlitter.setPosition(
+        this.hero.sprite.body.x,
+        this.hero.sprite.body.y - offsetGlitter
+      );
     };
 
     layer.setTileIndexCallback(GameScene.TILESPAWN, collider, this);
@@ -218,10 +246,12 @@ export default class GameScene extends Phaser.Scene {
    */
   setDesaparecerCollider(layer) {
     const collider = () => {
-      this.colliderDesaparecer = true;
+      this.time.delayedCall(4000, this.timerTileDesaparecer, [], this);
+      console.log("Collider: Desaparecer");
     };
 
-    layer.setTileIndexCallback(GameScene.TILEDESAPARECER, collider, this);
+    layer.setTileIndexCallback(1, collider, this);
+    
   }
 
   createIndexCallbacks() {
